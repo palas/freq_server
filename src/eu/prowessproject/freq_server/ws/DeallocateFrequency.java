@@ -33,7 +33,10 @@
  */
 package eu.prowessproject.freq_server.ws;
 
+import java.io.BufferedInputStream;
 import java.io.IOException;
+import java.util.InputMismatchException;
+import java.util.Scanner;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -73,16 +76,18 @@ public class DeallocateFrequency extends HttpServlet {
 		ObjectFactory of = new ObjectFactory();
 		FreqServerResponse responsePacket = of.createFreqServerResponse();
 		try {
-			state.deallocate(Integer.parseInt(request.getQueryString()));
+			Scanner scanner = new Scanner(new BufferedInputStream(request.getInputStream()));
+			scanner.useDelimiter("[^0-9]");
+			state.deallocate(scanner.nextInt());
+			scanner.close();
 			responsePacket.setState(Constants.OK);
-		} catch (NumberFormatException e) {
+		} catch (InputMismatchException e) {
 			Utils.setError(responsePacket, Constants.WRONG_REQUEST);
 		} catch (NotAllocated e) {
 			Utils.setError(responsePacket, Constants.NOT_ALLOCATED);
 		} catch (NotRunning e) {
 			Utils.setError(responsePacket, Constants.NOT_RUNNING);
 		}
-		responsePacket.setState(Constants.OK);
 		JAXB.marshal(responsePacket, response.getOutputStream());
 		Utils.disableCache(response);
 	}
