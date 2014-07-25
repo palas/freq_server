@@ -76,11 +76,15 @@ public class DeallocateFrequency extends HttpServlet {
 		ObjectFactory of = new ObjectFactory();
 		FreqServerResponse responsePacket = of.createFreqServerResponse();
 		try {
-			Scanner scanner = new Scanner(new BufferedInputStream(request.getInputStream()));
-			scanner.useDelimiter("[^0-9]");
-			state.deallocate(scanner.nextInt());
-			scanner.close();
-			responsePacket.setState(Constants.OK);
+			if ((request.getContentLength() > 0) && (request.getContentLength() < 20)) {
+				Scanner scanner = new Scanner(new BufferedInputStream(request.getInputStream()));
+				scanner.useDelimiter("[^0-9]");
+				state.deallocate(scanner.nextInt());
+				scanner.close();
+				responsePacket.setState(Constants.OK);
+			} else {
+				Utils.setError(responsePacket, Constants.WRONG_REQUEST);
+			}
 		} catch (InputMismatchException e) {
 			Utils.setError(responsePacket, Constants.WRONG_REQUEST);
 		} catch (NotAllocated e) {
