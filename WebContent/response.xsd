@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema targetNamespace="http://localhost:8080/freq_server/response.xsd" elementFormDefault="qualified" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://localhost:8080/freq_server/response.xsd">
+
+
+
+
+
+
+
+    <complexType name="freq_server_response">
+    	<sequence minOccurs="1" maxOccurs="1">
+    		<element name="state" minOccurs="1" maxOccurs="1">
+    			<simpleType>
+    				<restriction base="token">
+    					<enumeration value="OK"></enumeration>
+    					<enumeration value="ERROR"></enumeration>
+    				</restriction>
+    			</simpleType>
+    		</element>
+    		<element name="result" type="tns:result"></element>
+    		<element name="error" type="tns:error" minOccurs="0"
+    			maxOccurs="unbounded">
+    		</element>
+    	</sequence>
+    </complexType>
+
+    <complexType name="error">
+    	<sequence minOccurs="1" maxOccurs="1">
+    		<element name="error_type" minOccurs="1" maxOccurs="1">
+    			<simpleType>
+    				<restriction base="token">
+    					<enumeration value="ALREADY_STARTED"></enumeration>
+    					<enumeration value="NOT_RUNNING"></enumeration>
+    					<enumeration value="NOT_ALLOCATED"></enumeration>
+    					<enumeration value="NO_FREQUENCIES_AVAILABLE"></enumeration>
+    					<enumeration value="WRONG_REQUEST"></enumeration>
+    				</restriction>
+    			</simpleType>
+    		</element>
+    		<element name="error_description" type="string" minOccurs="0" maxOccurs="1"></element>
+    	</sequence>
+    </complexType>
+
+    <complexType name="result">
+    	<choice minOccurs="1" maxOccurs="1">
+    		<element name="frequency_allocated" type="int"></element>
+    	</choice>
+    </complexType>
+</schema>
